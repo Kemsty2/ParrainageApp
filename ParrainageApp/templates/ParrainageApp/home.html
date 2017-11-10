@@ -1,0 +1,115 @@
+{% extends "ParrainageApp/base.html" %}
+{% block html %}class="full-height"{% endblock %}
+{% load static%}
+{% block title %} Home {% endblock %}
+{% block css%}
+    <link href="{% static "ParrainageApp/css/style.css"%}" rel="stylesheet"> 
+    <style>        
+        .navbar:not(.top-nav-collapse) {
+            background: transparent !important;
+        }
+    </style>
+{% endblock%}
+
+{% block header %}
+    <div id = "intro" class="view hm-orange-slight">
+        <div class="container-fluid full-bg-img d-flex align-items-center justify-content-center">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-10 text-center">
+                    <h2 class="display-3 font-bold white-text mb-2">Parrainage </h2>
+                    
+                    <hr class="hr-light">
+                    
+                    <h4 class="white-text my-4"> Ceci est une application web qui permet de choisir vos parrains aleartoirement. </h4>
+                    <a href="#best" class="btn peach-gradient btn-rounded waves-effect">Commencer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <section id="best" class="text-center" style="height:auto;">
+            <h2 class="mb-4 font-bold">Choisir Son Parrain</h2>
+            <hr>
+            <div class="row d-flex justify-content-center mb-4">
+                <div class="col-md-8">
+                    <p>Dans cette section vous pouvez choisir votre parrain.<br> La procédure est simple <kbd>Selectionner</kbd> votre nom et votre filiaire puis cliquer sur <kbd>choisir</kbd></p>
+                </div>                
+            </div>                        
+            <div class="card">                                                                                                    
+                <div class="card-body">
+                    <form method='post' action="/home/" class="md-form">
+                        {% csrf_token %}
+                        <h4 class="card-title">Cliquer Sur Choisir pour obtenir votre Parrain</h4>
+                        <hr>                    
+                        <div class="row">
+                            <div class="col-md-4" style="margin-top:12px;">                                
+                                <input type="text" id ='filleul' name='nom_filleul' placeholder="Veuillez Saisir Votre Nom">                                 
+                            </div>
+                            <div class="col-md-4">                                
+                                <select class="select-wrapper mdb-select" onchange= "choisir_sexe(this);" id='sexe'>
+                                    <option value="" disabled selected> Choisir son Sexe</option>
+                                    <option value='Homme'>Homme</option>                                    
+                                    <option value='Femme'>Femme</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">                                
+                                <select class="select-wrapper mdb-select" onchange= "choisir(this);" id ="filiere">
+                                    <option value="" disabled selected>Choisir sa Filière</option>
+                                    {% for elt in filieres %}
+                                    <option value="{{elt.id}}"> {{ elt.nom }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <input type='hidden' id='filiere_choisie' name='filiere_choisie' value='0'>
+                            <input type='hidden' id='sexe_choisie' name='sexe_choisie' value='0'>
+                            <div class="col-md-4" style="margin:auto;margin-top:20px;">
+                                <input type="submit" class="btn btn-outline-warning waves-effect btn-lg" value="Choisir">                            
+                            </div>
+                        </form>
+                    </div>
+                </div>                                            
+            </div>
+        </section>
+        
+        <hr class="my-5">                                            
+    </div>
+    
+    
+{% endblock %}
+{% block script %}
+    <script>
+         $(document).ready(function() {
+            $('.mdb-select').material_select();
+         });
+    </script>
+    <script>
+        function choisir_sexe(item){
+            var selection = item.options[item.selectedIndex].value;
+            document.getElementById('sexe_choisie').value = selection;            
+        }
+        
+        function choisir(item){
+            var selection = item.options[item.selectedIndex].value;
+            document.getElementById('filiere_choisie').value = selection;            
+        }
+        
+        soundManager.setup({
+            url: '../../static/ParrainageApp/swf/',
+            onready: function(){
+                var mysound = soundManager.createSound({                    
+                    url: '../../static/ParrainageApp/sound/sound.mp3',
+                });
+                mysound.play({
+                    loops: 10
+                });
+            },
+            onfinish: function(){
+                alert("Erreur");
+            }
+        });
+        
+    </script>
+{% endblock %}
